@@ -1,6 +1,7 @@
-.gitignore
 __pycache__
 .DS_Store
 ignite
 ignite.sock
 .env
+cert.pem
+key.pem
