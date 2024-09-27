@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row mt-5">
+        <div class="col-md-6 text-center mx-auto">
+            <h1>Donate</h1>
+            <p class="w-75 text-center m-auto">Ignite Global Gifted Child Art Show could not operate without generous
+                donations from the community. To help keep us running, please consider making a donation!</p>
+        </div>
+        <div class="col-md-6">
+            <h2>Choose an amount to donate:</h2>
+            <button class="btn btn-primary mx-2 mb-3 disabled" type="button">$2</button>
+            <button class="btn btn-primary mx-2 mb-3 disabled" type="button">$5</button>
+            <button class="btn btn-primary mx-2 mb-3 disabled" type="button">$10</button>
+            <button class="btn btn-primary mx-2 mb-3 disabled" type="button">$50</button>
+            <button class="btn btn-primary mx-2 mb-3 disabled" type="button">$100</button>
+            <h2>Or, pick your own amount:</h2>
+            <form method="POST" enctype=multipart/form-data>
+                <input id="amount" class="form-control w-75 d-inline" type="number" placeholder="Amount" required />
+                <button class="btn btn-primary mx-4 disabled" type="submit">Donate</button>
+            </form>
+            <p>Unfortunately, we haven't set up a way to accept donations yet, but check back soon!</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
