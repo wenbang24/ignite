@@ -122,7 +122,7 @@ def contact():
 
 @app.route("/contact", methods=["POST"])
 @limiter.limit(
-    "5/day;1/second",
+    "10/second",
     error_message="You have sent too many requests. Please try again tomorrow.",
 )
 def contact_post():
@@ -146,61 +146,63 @@ def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-@app.route("/submit", methods=["GET", "POST"])
+@app.route("submit", methods=["GET"])
+@login_required
+def submit():
+    return render_template("submit.html")
+
+@app.route("/submit", methods=["POST"])
 @login_required
 @limiter.limit(
-    "5/day;1/second",
+    "1/second",
     error_message="You have sent too many requests. Please try again tomorrow.",
 )
-def submit():
-    if request.method == "GET":
-        return render_template("submit.html")
-    elif request.method == "POST":
-        if "file" not in request.files:
-            flash("No file submitted")
-            return redirect(url_for("submit"))
-        file = request.files["file"]
-        if file.filename == "":
-            flash("No file selected")
-            return redirect(url_for("submit"))
-        if file and allowed_file(file.filename):
-            filename = (
-                "".join(request.form["name"].split())
-                + "_"
-                + "".join(request.form["artname"].split())
-                + "."
-                + file.filename.rsplit(".", 1)[1].lower()
+def submit_post():
+    if "file" not in request.files:
+        flash("No file submitted")
+        return redirect(url_for("submit"))
+    file = request.files["file"]
+    if file.filename == "":
+        flash("No file selected")
+        return redirect(url_for("submit"))
+    if file and allowed_file(file.filename):
+        filename = (
+            "".join(request.form["name"].split())
+            + "_"
+            + "".join(request.form["artname"].split())
+            + "."
+            + file.filename.rsplit(".", 1)[1].lower()
+        )
+        if artworks.find_one({"filename": filename}) or pending.find_one(
+            {"filename": filename}
+        ):
+            flash(
+                "You have already submitted an artwork with this name; please contact our team if you believe this is a mistake or if you would like to modify it."
             )
-            if artworks.find_one({"filename": filename}) or pending.find_one(
-                {"filename": filename}
-            ):
-                flash(
-                    "You have already submitted an artwork with this name; please contact our team if you believe this is a mistake or if you would like to modify it."
-                )
-                return redirect(url_for("submit"))
-            pending.insert_one(
-                {
-                    "name": request.form["name"],
-                    "email": current_user.get_id(),
-                    "artname": request.form["artname"],
-                    "caption": request.form["caption"],
-                    "filename": filename,
-                    "votes": {},
-                }
+            return redirect(url_for("submit"))
+        pending.insert_one(
+            {
+                "name": request.form["name"],
+                "email": current_user.get_id(),
+                "artname": request.form["artname"],
+                "caption": request.form["caption"],
+                "filename": filename,
+                "votes": {},
+            }
+        )
+        output = upload_file(file, filename)
+        if output:
+            flash(
+                "Thanks for submitting! Your artwork is currently under review by our team."
             )
-            output = upload_file(file, filename)
-            if output:
-                flash(
-                    "Thanks for submitting! Your artwork is currently under review by our team."
-                )
-                return redirect(url_for("submit"))
-            else:
-                flash("File upload failed, please try again")
-                return redirect(url_for("submit"))
+            return redirect(url_for("submit"))
         else:
-            flash("Invalid file type")
-            print(f"Invalid file type: {file.filename}")
+            flash("File upload failed, please try again")
             return redirect(url_for("submit"))
+    else:
+        flash("Invalid file type")
+        print(f"Invalid file type: {file.filename}")
+        return redirect(url_for("submit"))
 
 
 admin_username = str(os.getenv("ADMIN_USERNAME"))
@@ -293,7 +295,7 @@ def upvote():
 
 @app.route("/login", methods=["GET", "POST"])
 @limiter.limit(
-    "2/second", error_message="You have sent too many requests. Please try again later."
+    "10/second", error_message="You have sent too many requests. Please try again later."
 )
 def login():
     dest = request.args.get("next")
@@ -314,7 +316,7 @@ def login():
 
 @app.route("/register", methods=["GET", "POST"])
 @limiter.limit(
-    "3/day;1/second",
+    "10/second",
     error_message="You have sent too many requests. Please try again tomorrow.",
 )
 def register():
