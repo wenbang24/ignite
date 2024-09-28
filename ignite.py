@@ -146,7 +146,7 @@ def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-@app.route("submit", methods=["GET"])
+@app.route("/submit", methods=["GET"])
 @login_required
 def submit():
     return render_template("submit.html")
