@@ -293,7 +293,7 @@ def upvote():
 
 @app.route("/login", methods=["GET", "POST"])
 @limiter.limit(
-    "1/second", error_message="You have sent too many requests. Please try again later."
+    "2/second", error_message="You have sent too many requests. Please try again later."
 )
 def login():
     dest = request.args.get("next")
