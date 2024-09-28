@@ -12,7 +12,6 @@ from flask_login import (
     logout_user,
     current_user,
 )
-from secrets import token_hex
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -44,7 +43,7 @@ load_dotenv()
 app = Flask(__name__, subdomain_matching=True)
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1000 * 1000
 #app.config['SERVER_NAME'] ="ignite-global.org"
-app.secret_key = token_hex()
+app.secret_key = os.getenv("SECRET_KEY")
 
 limiter = Limiter(
     get_remote_address,
@@ -152,11 +151,11 @@ def submit():
     return render_template("submit.html")
 
 @app.route("/submit", methods=["POST"])
-@login_required
 @limiter.limit(
     "1/second",
     error_message="You have sent too many requests. Please try again tomorrow.",
 )
+@login_required
 def submit_post():
     if "file" not in request.files:
         flash("No file submitted")
