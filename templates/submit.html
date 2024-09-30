@@ -11,7 +11,7 @@
                         <form method="POST" enctype=multipart/form-data>
                             <div class="mb-3"><input id="name" class="form-control" type="text" name="name" placeholder="Artist Name" required maxlength="255" /></div>
                             <div class="mb-3"><input id="artname" class="form-control" type="text" name="artname" placeholder="Artwork Name" required maxlength="255" /></div>
-                            <div class="mb-3"><input id="caption" class="form-control" type="text" name="caption" placeholder="Caption" required maxlength="255" /></div>
+                            <div class="mb-3"><textarea id="caption" class="form-control" type="text" name="caption" placeholder="Caption" required maxlength="2048" rows="6"></textarea></div>
                             <div class="mb-3"><input id="file" class="form-control" type="file" name="file" required accept="image/*" /></div>
                             <div><button class="btn btn-primary d-block w-100" type="submit">Submit!</button></div>
                         </form>

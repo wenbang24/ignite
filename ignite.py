@@ -15,6 +15,7 @@ from flask_login import (
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from urllib.parse import quote_plus
 
 
 def upload_file(file, filename):
@@ -41,7 +42,7 @@ def upload_file(file, filename):
 
 load_dotenv()
 app = Flask(__name__, subdomain_matching=True)
-app.config["MAX_CONTENT_LENGTH"] = 16 * 1000 * 1000
+app.config["MAX_CONTENT_LENGTH"] = 32 * 1000 * 1000
 #app.config['SERVER_NAME'] ="ignite-global.org"
 app.secret_key = os.getenv("SECRET_KEY")
 
@@ -185,7 +186,7 @@ def submit_post():
                 "email": current_user.get_id(),
                 "artname": request.form["artname"],
                 "caption": request.form["caption"],
-                "filename": filename,
+                "filename": quote_plus(filename),
                 "votes": {},
             }
         )
