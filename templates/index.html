@@ -199,10 +199,12 @@
                 href="/gallery"
                 style="display: inline-block; width: 33%; padding: 5px"
             >
-                <img
-                    style="width: 100%; height: auto"
-                    src="https://ignite-global.s3.ap-southeast-2.amazonaws.com/{{ artwork['filename'] }}"
-                />
+                <div class="zoom-img">
+                    <img
+                        style="width: 100%; height: auto"
+                        src="https://ignite-global.s3.ap-southeast-2.amazonaws.com/{{ artwork['filename'] }}"
+                    />
+                </div>
             </a>
             {% endfor %}
         </div>

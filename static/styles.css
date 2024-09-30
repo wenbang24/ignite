@@ -4,3 +4,18 @@
     background-size: cover;
     color: rgb(33, 37, 41);
 }
+
+.zoom-img {
+    overflow: clip;
+    background-color: #000000;
+}
+
+.zoom-img img {
+    object-fit: cover;
+    transition: all 0.5s ease;
+}
+
+.zoom-img img:hover {
+    transform: scale(1.2);
+    filter: opacity(50%);
+}

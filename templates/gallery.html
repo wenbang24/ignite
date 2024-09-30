@@ -8,7 +8,11 @@
 <div class="d-flex flex-wrap justify-content-center">
     {% for artwork in artworks %}
         <button style="border:none;background:none;" type="button" data-bs-toggle="modal" data-bs-target={{ '#' + artwork['filename'] | replace('.', '') | replace('_', '') }}>
-            <img style="max-height:400px;max-width: 100%;padding: 5px;" src="https://ignite-global.s3.ap-southeast-2.amazonaws.com/{{ artwork['filename'] }}">
+            <div style="max-height: 400px; padding: 5px;">
+                <div class="zoom-img">
+                    <img style="max-height: 400px;" src="https://ignite-global.s3.ap-southeast-2.amazonaws.com/{{ artwork['filename'] }}">
+                </div>
+            </div>
         </button>
         <div class="modal" id="{{ artwork['filename'] | replace('.', '') | replace('_', '') }}">
             <div class="modal-dialog modal-lg modal-dialog-scrollable">
@@ -20,12 +24,12 @@
                         </h4>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
-                    
+
                     <div class="modal-body">
                         <img style="width: 100%;padding: 5px;" src="https://ignite-global.s3.ap-southeast-2.amazonaws.com/{{ artwork['filename'] }}">
                         <p>{{ artwork['caption'] }}</p>
                     </div>
-                    
+
                     <div class="modal-footer">
                         {% if current_user.is_authenticated %}
                             {% if artwork['votes'][current_user.get_id()] is defined%}
@@ -62,7 +66,7 @@
                 upvotebutton.classList.add('btn-outline-success');
                 upvotebutton.innerHTML = 'Upvotes: ' + (parseInt(upvotebutton.innerHTML.split(' ')[1]) - 1);
             }
-            
+
         }
     </script>
 </div>
