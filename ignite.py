@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, flash, redirect, url_for
+from flask import Flask, render_template, request, flash, redirect, url_for, send_from_directory
 import boto3
 from dotenv import load_dotenv
 import os
@@ -343,6 +343,11 @@ def logout():
     logout_user()
     flash("Logged out successfully")
     return redirect(url_for("home"))
+
+@app.route('/robots.txt')
+@app.route('/sitemap.xml')
+def static_from_root():
+    return send_from_directory(app.static_folder, request.path[1:])
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', ssl_context="adhoc")
