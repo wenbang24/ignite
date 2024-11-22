@@ -5,3 +5,7 @@ ignite.sock
 .env
 cert.pem
 key.pem
+typesense-server
+typesense-server.*
+typesense-data
+.idea
