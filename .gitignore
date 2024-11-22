@@ -9,3 +9,4 @@ typesense-server
 typesense-server.*
 typesense-data
 .idea
+.venv
