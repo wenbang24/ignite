@@ -114,21 +114,9 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="{{ url_for('static', filename='assets/js/countrySelect.min.js') }}"></script>
 <script>
-    var defaultSelect = '';
-    var countryViaIp = '';
-    $.ajax({
-        url: "https://ipapi.co/json",
-        jsonpCallback: "callback",
-        dataType: "json",
-        success: function (json) {
-            defaultSelect = json.country_code;
-            countryViaIp = defaultSelect.toLowerCase();
-            $("#country").countrySelect({
-                defaultCountry: countryViaIp,
-                preferredCountries: ['ca', 'us', 'gb', 'cn', 'au'],
-                responsiveDropdown: true
-            });
-        }
+    $("#country").countrySelect({
+        preferredCountries: ['ca', 'us', 'gb', 'cn', 'au'],
+        responsiveDropdown: true
     });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@24.7.0/build/js/intlTelInput.min.js"></script>
