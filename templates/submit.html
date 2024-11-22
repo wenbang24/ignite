@@ -4,16 +4,28 @@
 <section class="position-relative py-4 py-xl-5">
     <div class="container position-relative">
         <div class="row d-flex justify-content-center">
+            <div class="col-md-6 col-xl-6 mx-auto">
+                <h2>Submit an Artwork</h2>
+                <p class="w-lg-50">We at Ignite would love to see your artwork! Fill in your details and upload your
+                    artwork.</p>
+                <h3>Submission Guidelines</h3>
+            </div>
             <div class="col-md-8 col-lg-6 col-xl-5 col-xxl-4">
                 <div class="card mb-5">
                     <div class="card-body p-sm-5">
                         <h2 class="text-center mb-4">Submit an Artwork</h2>
                         <form method="POST" enctype=multipart/form-data>
                             <div class="mb-3"><input id="name" class="form-control" type="text" name="name" placeholder="Artist Name" required maxlength="255" /></div>
+                            <div class="mb-3"><input type="text" id="country"></div>
+                            <div class="mb-3"><input type="tel" id="phone"></div>
                             <div class="mb-3"><input id="artname" class="form-control" type="text" name="artname" placeholder="Artwork Name" required maxlength="255" /></div>
                             <div class="mb-3"><textarea id="caption" class="form-control" type="text" name="caption" placeholder="Caption" required maxlength="2048" rows="6"></textarea></div>
-                            <div class="mb-3"><input id="file" class="form-control" type="file" name="file" required accept="image/*" /></div>
+                            <div class="mb-3"><input id="file" class="form-control" type="file" name="file" placeholder="Drag and drop here" accept="image/*" /></div>
+                            {% if current_user.is_authenticated %}
                             <div><button class="btn btn-primary d-block w-100" type="submit">Submit!</button></div>
+                            {% else %}
+                            <div><a class="btn btn-primary d-block w-100" href="{{url_for('login')}}">Login to Submit</a></div>
+                            {% endif %}
                         </form>
                     </div>
                 </div>
