@@ -42,7 +42,7 @@ def upload_file(file, filename):
 
 load_dotenv()
 app = Flask(__name__, subdomain_matching=True)
-app.config["MAX_CONTENT_LENGTH"] = 32 * 1000 * 1000
+app.config["MAX_CONTENT_LENGTH"] = 16 * 1000 * 1000
 #app.config['SERVER_NAME'] ="ignite-global.org"
 app.secret_key = os.getenv("SECRET_KEY")
 
@@ -66,7 +66,6 @@ users = db["Users"]
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
-
 
 class User(UserMixin):
     def __init__(self, id):

@@ -19,3 +19,7 @@
     transform: scale(1.2);
     filter: opacity(50%);
 }
+
+#phoneInputDiv > div {
+    width: 100%;
+}

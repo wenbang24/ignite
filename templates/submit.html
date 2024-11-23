@@ -1,36 +1,106 @@
 {% extends "base.html" %}
 
 {% block content %}
-<section class="position-relative py-4 py-xl-5">
-    <div class="container position-relative">
-        <div class="row d-flex justify-content-center">
-            <div class="col-md-6 col-xl-6 mx-auto">
-                <h2>Submit an Artwork</h2>
-                <p class="w-lg-50">We at Ignite would love to see your artwork! Fill in your details and upload your
-                    artwork.</p>
-                <h3>Submission Guidelines</h3>
-            </div>
-            <div class="col-md-8 col-lg-6 col-xl-5 col-xxl-4">
-                <div class="card mb-5">
-                    <div class="card-body p-sm-5">
-                        <h2 class="text-center mb-4">Submit an Artwork</h2>
-                        <form method="POST" enctype=multipart/form-data>
-                            <div class="mb-3"><input id="name" class="form-control" type="text" name="name" placeholder="Artist Name" required maxlength="255" /></div>
-                            <div class="mb-3"><input type="text" id="country"></div>
-                            <div class="mb-3"><input type="tel" id="phone"></div>
-                            <div class="mb-3"><input id="artname" class="form-control" type="text" name="artname" placeholder="Artwork Name" required maxlength="255" /></div>
-                            <div class="mb-3"><textarea id="caption" class="form-control" type="text" name="caption" placeholder="Caption" required maxlength="2048" rows="6"></textarea></div>
-                            <div class="mb-3"><input id="file" class="form-control" type="file" name="file" placeholder="Drag and drop here" accept="image/*" /></div>
+    <section class="position-relative py-4 py-xl-5">
+        <div class="container position-relative">
+            <div class="row d-flex justify-content-center">
+                <div class="col-md-6 col-xl-6 mx-auto">
+                    <h2>Submit an Artwork</h2>
+                    <p class="w-lg-50">We at Ignite would love to see your artwork! Fill in your details and upload your
+                        artwork.</p>
+                    <h3>Submission Guidelines</h3>
+                    <h4>Eligibility Criteria</h4>
+                    <ul>
+                        <li><strong>Age Range:</strong> 5 to 18 years old</li>
+                        <li><strong>Participants:</strong> Open to entrants from all countries and regions worldwide
+                        </li>
+                        <li><strong>Theme: </strong>Open theme expressing "My World"</li>
+                    </ul>
+                    <h4>Artwork Specifications</h4>
+                    <ul>
+                        <li><strong>Medium:</strong> Any medium is accepted: Painting, drawing, digital art, sculpture,
+                            etc.
+                        </li>
+                        <li><strong>File Format:</strong> JPG, JPEG, PNG, GIF, WEBP</li>
+                        <li><strong>File Size:</strong> Maximum 16MB</li>
+                        <li><strong>Resolution:</strong> Minimum 300 dpi</li>
+                        <li><strong>Number of Submissions:</strong> Each participant may submit up to 3 pieces</li>
+                    </ul>
+                </div>
+                <div class="col-md-8 col-lg-6 col-xl-5 col-xxl-4">
+                    <div class="card mb-5">
+                        <div class="card-body p-sm-5">
+                            <h2 class="text-center mb-4">Submit an Artwork</h2>
                             {% if current_user.is_authenticated %}
-                            <div><button class="btn btn-primary d-block w-100" type="submit">Submit!</button></div>
                             {% else %}
-                            <div><a class="btn btn-primary d-block w-100" href="{{url_for('login')}}">Login to Submit</a></div>
+                                <div class="alert alert-warning">Please <a href="{{ url_for('login') }}">login</a> to
+                                    submit your artwork.
+                                </div>
                             {% endif %}
-                        </form>
+                            <form method="POST" enctype=multipart/form-data>
+                                <h3>Artist Information</h3>
+                                <div class="mb-3">
+                                    <input id="name" class="form-control" type="text" name="name"
+                                           placeholder="Artist Name" required maxlength="255"/>
+                                </div>
+                                <div class="mb-3">
+                                    <input class="form-control" type="text" id="country">
+                                </div>
+                                <div class="mb-3 w-100" id="phoneInputDiv">
+                                    <input class="form-control w-100" type="tel" id="phone">
+                                </div>
+                                <h3>Artwork Information</h3>
+                                <div class="mb-3">
+                                    <input id="artname" class="form-control" type="text" name="artname"
+                                           placeholder="Artwork Name" required maxlength="255"/>
+                                </div>
+                                <div class="mb-3">
+                                    <input id="medium" class="form-control" type="text" name="medium"
+                                           placeholder="Medium" required maxlength="255"/>
+                                </div>
+                                <div class="mb-3">
+                                    <textarea id="caption" class="form-control" type="text" name="caption"
+                                              placeholder="Caption" required maxlength="2048"
+                                              rows="6"></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <input id="file" class="form-control" type="file" name="file"
+                                           placeholder="Drag and drop here" accept="image/*"/>
+                                </div>
+                                <h3>Consent & Agreement</h3>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="consent"
+                                           required/>
+                                    <label class="form-check-label" for="consent">
+                                        I agree to the <a href="{{ url_for('legal') }}#terms-of-service">Terms &
+                                        Conditions</a> and <a href="{{ url_for('legal') }}#privacy-policy">Privacy
+                                        Policy</a>
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="underage"
+                                           required/>
+                                    <label class="form-check-label" for="underage">
+                                        (If the participant is under 18) I have obtained consent from a parent or
+                                        guardian.
+                                    </label>
+                                </div>
+                                {% if current_user.is_authenticated %}
+                                    <div>
+                                        <button class="btn btn-primary d-block w-100" type="submit">Submit!</button>
+                                    </div>
+                                {% else %}
+                                    <div>
+                                        <a class="btn btn-primary d-block w-100" href="{{ url_for('login') }}">
+                                            Login to Submit
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 {% endblock %}
