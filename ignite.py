@@ -207,7 +207,7 @@ def submit_post():
 
 admin_username = str(os.getenv("ADMIN_USERNAME"))
 
-@app.route("/ignition", methods=["GET", "POST"])
+@app.route("/", methods=["GET", "POST"], subdomain="admin")
 @login_required
 def admin():
     if not current_user.get_id() == admin_username:
@@ -299,12 +299,15 @@ def upvote():
 )
 def login():
     dest = request.args.get("next")
+    print(dest)
     if request.method == "POST":
         user = users.find_one({"email": request.form["email"]})
         if user and check_password_hash(user["password"], request.form["password"]):
             login_user(User(user["email"]))
             flash("Logged in succesfully!")
             try:
+                if dest[:5] == "https":
+                    return redirect(dest)
                 return redirect(url_for(dest[1:]))
             except:
                 return redirect(url_for("home"))
@@ -354,4 +357,6 @@ def static_from_root():
     return send_from_directory(app.static_folder, request.path[1:])
 
 if __name__ == "__main__":
+    app.config['SERVER_NAME'] = "ignite.local:5000"
     app.run(ssl_context="adhoc", debug=True)
+
