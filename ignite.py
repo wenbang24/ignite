@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, flash, redirect, url_for, sen
 import boto3
 from dotenv import load_dotenv
 import os
+from flask_admin import Admin
+from flask_admin.theme import Bootstrap4Theme
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 from flask_login import (
@@ -207,6 +209,7 @@ def submit_post():
 
 admin_username = str(os.getenv("ADMIN_USERNAME"))
 
+admin = Admin(app, name='ignite', theme=Bootstrap4Theme(swatch='cerulean'))
 @app.route("/", methods=["GET", "POST"], subdomain="admin")
 @login_required
 def admin():
