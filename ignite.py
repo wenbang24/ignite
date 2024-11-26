@@ -4,8 +4,13 @@ from dotenv import load_dotenv
 import os
 from flask_admin import Admin
 from flask_admin.theme import Bootstrap4Theme
-from pymongo.mongo_client import MongoClient
-from pymongo.server_api import ServerApi
+from mongoengine import Document, connect
+from mongoengine.fields import (
+    EmailField,
+    ListField,
+    StringField,
+    DateTimeField
+)
 from flask_login import (
     LoginManager,
     UserMixin,
@@ -18,6 +23,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from urllib.parse import quote_plus
+from datetime import datetime, UTC
 
 
 def upload_file(file, filename):
@@ -56,41 +62,54 @@ limiter = Limiter(
 )
 
 uri = os.getenv("DB_URI")
-client = MongoClient(uri, server_api=ServerApi("1"))
-db = client["Ignite"]
-print("Collections:")
-print(db.list_collection_names())
-artworks = db["Ignite"]
-pending = db["Pending"]
-messages = db["Messages"]
-users = db["Users"]
+db = connect(host=uri)
+
 
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
 
-class User(UserMixin):
-    def __init__(self, id):
-        self.id = id
+class User(Document, UserMixin):
+    name = StringField(required=True)
+    email = EmailField(required=True, unique=True)
+    password = StringField(required=True)
 
     def get_id(self):
-        return self.id
+        return self.email
 
-    def is_authenticated(self):
-        return True
+class Artwork(Document):
+    name = StringField(required=True)
+    email = EmailField(required=True)
+    country = StringField(required=True)
+    phone = StringField()
+    artname = StringField(required=True)
+    medium = StringField(required=True)
+    caption = StringField(required=True)
+    filename = StringField(required=True)
 
-    def is_anonymous(self):
-        return False
+class DisplayArtwork(Document):
+    name = StringField(required=True)
+    email = EmailField(required=True)
+    country = StringField(required=True)
+    phone = StringField()
+    artname = StringField(required=True)
+    medium = StringField(required=True)
+    caption = StringField(required=True)
+    filename = StringField(required=True)
+    votes = ListField(EmailField())
+    published = DateTimeField(required=True)
 
-    def is_active(self):
-        return True
+class Message(Document):
+    name = StringField(required=True)
+    email = EmailField(required=True)
+    message = StringField(required=True)
 
 
 @login_manager.user_loader
 def load_user(user_id):
-    user = users.find_one({"email": user_id})
+    user = User.objects(email=user_id).first()
     if user:
-        return User(user["email"])
+        return user
     return None
 
 
@@ -108,12 +127,12 @@ ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "webp"}
 
 @app.route("/")
 def home():
-    return render_template("index.html", artworks=tuple(artworks.find({}).sort({"votes": -1}))[:3])
+    return render_template("index.html", artworks=DisplayArtwork.objects[:3])
 
 
 @app.route("/gallery")
 def gallery():
-    return render_template("gallery.html", artworks=tuple(artworks.find({}).sort({"votes": -1})))
+    return render_template("gallery.html", artworks=DisplayArtwork.objects)
 
 
 @app.route("/contact", methods=["GET"])
@@ -130,13 +149,12 @@ def about():
     error_message="You have sent too many requests. Please try again tomorrow.",
 )
 def contact_post():
-    messages.insert_one(
-        {
-            "name": request.form["name"],
-            "email": request.form["email"],
-            "message": request.form["message"],
-        }
+    newMessage = Message(
+        name = request.form["name"],
+        email = request.form["email"],
+        message = request.form["message"]
     )
+    newMessage.save()
     flash("Message sent successfully")
     return redirect(url_for("contact"))
 
@@ -155,8 +173,8 @@ def submit():
 
 @app.route("/submit", methods=["POST"])
 @limiter.limit(
-    "1/second",
-    error_message="You have sent too many requests. Please try again tomorrow.",
+    "10/second",
+    error_message="You have sent too many requests. Please try again later.",
 )
 @login_required
 def submit_post():
@@ -175,28 +193,28 @@ def submit_post():
             + "."
             + file.filename.rsplit(".", 1)[1].lower()
         )
-        if artworks.find_one({"filename": filename}) or pending.find_one(
-            {"filename": filename}
-        ):
+        if Artwork.objects(filename=filename, email=current_user.get_id()) or DisplayArtwork.objects(filename=filename, email=current_user.get_id()):
             flash(
                 "You have already submitted an artwork with this name; please contact our team if you believe this is a mistake or if you would like to modify it."
             )
             return redirect(url_for("submit"))
-        pending.insert_one(
-            {
-                "name": request.form["name"],
-                "email": current_user.get_id(),
-                "artname": request.form["artname"],
-                "caption": request.form["caption"],
-                "filename": quote_plus(filename),
-                "votes": {},
-            }
-        )
         output = upload_file(file, filename)
         if output:
             flash(
                 "Thanks for submitting! Your artwork is currently under review by our team."
             )
+            print(*request.form)
+            newArtwork = Artwork(
+                name=request.form["name"],
+                email=current_user.get_id(),
+                country=request.form["country"],
+                phone=request.form["phone"],
+                artname=request.form["artname"],
+                medium=request.form["medium"],
+                caption=request.form["caption"],
+                filename=quote_plus(filename),
+            )
+            newArtwork.save()
             return redirect(url_for("submit"))
         else:
             flash("File upload failed, please try again")
@@ -210,38 +228,40 @@ def submit_post():
 admin_username = str(os.getenv("ADMIN_USERNAME"))
 
 admin = Admin(app, name='ignite', theme=Bootstrap4Theme(swatch='cerulean'))
-@app.route("/", methods=["GET", "POST"], subdomain="admin")
+@app.route("/ignition", methods=["GET", "POST"])
 @login_required
 def admin():
     if not current_user.get_id() == admin_username:
         flash("You do not have access to that page.")
         return redirect(url_for("home"))
     if request.method == "GET":
-        return render_template("admin.html", artworks=tuple(pending.find({})))
+        return render_template("admin.html", artworks=Artwork.objects)
     elif request.method == "POST":
         if current_user.is_authenticated:
             if request.form["action"] == "accept":
-                artwork = pending.find_one({"filename": request.form["filename"]})
+                artwork = Artwork.objects(filename=request.form["filename"]).first()
                 if artwork:
-                    artworks.insert_one(
-                        {
-                            "name": artwork["name"],
-                            "email": artwork["email"],
-                            "artname": artwork["artname"],
-                            "caption": artwork["caption"],
-                            "filename": artwork["filename"],
-                            "votes": artwork["votes"],
-                        }
+                    newDisplayArtwork = DisplayArtwork(
+                        name=artwork.name,
+                        email=artwork.email,
+                        country=artwork.country,
+                        phone=artwork.phone,
+                        artname=artwork.artname,
+                        medium=artwork.medium,
+                        caption=artwork.caption,
+                        filename=artwork.filename,
+                        published=datetime.now(UTC)
                     )
-                    pending.delete_one({"filename": request.form["filename"]})
+                    newDisplayArtwork.save(force_insert=True)
+                    artwork.delete()
                     flash("Artwork approved successfully")
                     return redirect(url_for("admin"))
                 flash("Something went wrong")
                 return redirect(url_for("admin"))
             elif request.form["action"] == "reject":
-                artwork = pending.find_one({"filename": request.form["filename"]})
+                artwork = Artwork.objects(filename=request.form["filename"]).first()
                 if artwork:
-                    pending.delete_one({"filename": request.form["filename"]})
+                    artwork.delete()
                     s3.delete_object(
                         Bucket=os.getenv("AWS_BUCKET_NAME"),
                         Key=request.form["filename"],
@@ -251,23 +271,25 @@ def admin():
                 flash("Something went wrong")
                 return redirect(url_for("admin"))
             elif request.form["action"] == "acceptall":
-                for artwork in pending.find({}):
-                    artworks.insert_one(
-                        {
-                            "name": artwork["name"],
-                            "email": artwork["email"],
-                            "artname": artwork["artname"],
-                            "caption": artwork["caption"],
-                            "filename": artwork["filename"],
-                            "votes": artwork["votes"],
-                        }
+                for artwork in Artwork.objects:
+                    newDisplayArtwork = DisplayArtwork(
+                        name=artwork.name,
+                        email=artwork.email,
+                        country=artwork.country,
+                        phone=artwork.phone,
+                        artname=artwork.artname,
+                        medium=artwork.medium,
+                        caption=artwork.caption,
+                        filename=artwork.filename,
+                        published=datetime.now(UTC)
                     )
-                    pending.delete_one({"filename": artwork["filename"]})
+                    newDisplayArtwork.save(force_insert=True)
+                    artwork.delete()
                 flash("All artworks approved successfully")
                 return redirect(url_for("admin"))
             elif request.form["action"] == "rejectall":
-                for artwork in pending.find({}):
-                    pending.delete_one({"filename": artwork["filename"]})
+                for artwork in Artwork.objects:
+                    artwork.delete()
                     s3.delete_object(
                         Bucket=os.getenv("AWS_BUCKET_NAME"), Key=artwork["filename"]
                     )
@@ -278,19 +300,16 @@ def admin():
 @app.route("/upvote", methods=["POST"])
 def upvote():
     if current_user.is_authenticated:
-        artwork = artworks.find_one({"filename": request.form["filename"]})
+        artwork = DisplayArtwork.objects(filename=request.form["filename"])
         if artwork:
             response = None
             try:
-                artwork["votes"].pop(current_user.get_id())
+                artwork.update(pull__votes=current_user.get_id())
                 response = "downvoted"
             except KeyError:
-                artwork["votes"][current_user.get_id()] = True
+                artwork.update(add_to_set__votes=[current_user.get_id()])
                 response = "upvoted"
-            artworks.update_one(
-                {"filename": request.form["filename"]},
-                {"$set": {"votes": artwork["votes"]}},
-            )
+            #artwork.votes.update(add_to_set__votes=[current_user.get_id()])
             return response, 200
         return "Failed to upvote", 500
     return "Login to upvote", 401
@@ -302,14 +321,14 @@ def upvote():
 )
 def login():
     dest = request.args.get("next")
-    print(dest)
     if request.method == "POST":
-        user = users.find_one({"email": request.form["email"]})
-        if user and check_password_hash(user["password"], request.form["password"]):
-            login_user(User(user["email"]))
-            flash("Logged in succesfully!")
+        user = User.objects(email=request.form['email']).first()
+        print(type(user))
+        if user and check_password_hash(user.password, request.form["password"]):
+            login_user(user)
+            flash("Logged in successfully!")
             try:
-                if dest[:5] == "https":
+                if dest[:4] == "http":
                     return redirect(dest)
                 return redirect(url_for(dest[1:]))
             except:
@@ -327,17 +346,16 @@ def login():
 )
 def register():
     if request.method == "POST":
-        if users.find_one({"email": request.form["email"]}):
+        if User.objects(email=request.form["email"]):
             flash("Email already in use")
             return redirect(url_for("register"))
         else:
-            users.insert_one(
-                {
-                    "name": request.form["name"],
-                    "email": request.form["email"],
-                    "password": generate_password_hash(request.form["password"]),
-                }
+            newuser = User(
+                name=request.form["name"],
+                email=request.form["email"],
+                password=generate_password_hash(request.form["password"]),
             )
+            newuser.save()
             flash("Account created successfully")
             return redirect(url_for("login"))
     return render_template("register.html")

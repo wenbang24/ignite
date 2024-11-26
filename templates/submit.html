@@ -37,17 +37,17 @@
                                     submit your artwork.
                                 </div>
                             {% endif %}
-                            <form method="POST" enctype=multipart/form-data>
+                            <form method="POST" enctype=multipart/form-data id="artform">
                                 <h3>Artist Information</h3>
                                 <div class="mb-3">
                                     <input id="name" class="form-control" type="text" name="name"
                                            placeholder="Artist Name" required maxlength="255"/>
                                 </div>
                                 <div class="mb-3">
-                                    <input class="form-control" type="text" id="country">
+                                    <input class="form-control" type="text" required id="country" name="country">
                                 </div>
                                 <div class="mb-3 w-100" id="phoneInputDiv">
-                                    <input class="form-control w-100" type="tel" id="phone">
+                                    <input class="form-control w-100" type="tel" id="phone" name="phone">
                                 </div>
                                 <h3>Artwork Information</h3>
                                 <div class="mb-3">
@@ -91,7 +91,8 @@
                                     </div>
                                 {% else %}
                                     <div>
-                                        <a class="btn btn-primary d-block w-100" href="{{ url_for('login') }}?next=submit">
+                                        <a class="btn btn-primary d-block w-100"
+                                           href="{{ url_for('login') }}?next=submit">
                                             Login to Submit
                                         </a>
                                     </div>
@@ -103,4 +104,26 @@
             </div>
         </div>
     </section>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="{{ url_for('static', filename='assets/js/countrySelect.min.js') }}"></script>
+    <script>
+        $("#country").countrySelect({
+            preferredCountries: ['ca', 'us', 'gb', 'cn', 'au'],
+            responsiveDropdown: true
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@24.7.0/build/js/intlTelInput.min.js"></script>
+    <script>
+        const iti = document.querySelector("#phone");
+        window.intlTelInput(iti, {
+            initialCountry: "auto",
+            geoIpLookup: callback => {
+                fetch("https://ipapi.co/json")
+                    .then(res => res.json())
+                    .then(data => callback(data.country_code))
+                    .catch(() => callback("us"));
+            },
+            loadUtilsOnInit: "https://cdn.jsdelivr.net/npm/intl-tel-input@24.7.0/build/js/utils.js",
+        });
+    </script>
 {% endblock %}
