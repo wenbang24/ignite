@@ -52,7 +52,7 @@ def upload_file(file, filename):
 
 
 load_dotenv()
-app = Flask(__name__, subdomain_matching=True)
+app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1000 * 1000
 #app.config['SERVER_NAME'] ="ignite-global.org"
 app.secret_key = os.getenv("SECRET_KEY")
@@ -515,6 +515,5 @@ def static_from_root():
     return send_from_directory(app.static_folder, request.path[1:])
 
 if __name__ == "__main__":
-    app.config['SERVER_NAME'] = "ignite.local:5000"
-    app.run(ssl_context="adhoc", debug=True)
+    app.run(host="0.0.0.0", ssl_context="adhoc")
 
