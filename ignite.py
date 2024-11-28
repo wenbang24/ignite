@@ -2,8 +2,10 @@ from flask import Flask, render_template, request, flash, redirect, url_for, sen
 import boto3
 from dotenv import load_dotenv
 import os
+from flask_admin.actions import action
+from flask_mongoengine import MongoEngine
 from flask_admin import Admin
-from flask_admin.theme import Bootstrap4Theme
+from flask_admin.contrib.mongoengine import ModelView
 from mongoengine import Document, connect
 from mongoengine.fields import (
     EmailField,
@@ -23,6 +25,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from urllib.parse import quote_plus
+from markupsafe import Markup
 from datetime import datetime, UTC
 
 
@@ -62,7 +65,11 @@ limiter = Limiter(
 )
 
 uri = os.getenv("DB_URI")
-db = connect(host=uri)
+app.config['MONGODB_SETTINGS'] = {
+    'db': 'test',
+    'host': uri
+}
+db = MongoEngine(app)
 
 
 login_manager = LoginManager()
@@ -226,10 +233,138 @@ def submit_post():
 
 
 admin_username = str(os.getenv("ADMIN_USERNAME"))
+class PendingArtworks(ModelView):
+    column_editable_list = ['name', 'artname', 'medium', 'caption']
+    column_searchable_list = ['name', 'email', 'phone', 'artname', 'medium', 'caption']
 
-admin = Admin(app, name='ignite', theme=Bootstrap4Theme(swatch='cerulean'))
+    def is_accessible(self):
+        print(current_user.get_id())
+        return current_user.is_authenticated and current_user.get_id() == admin_username
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for('login', next=request.url))
+    def get_query(self):
+        artworks = Artwork.objects
+        return artworks
 
+    def _list_thumbnail(view, context, model, name):
+        if not model.filename:
+            return ''
 
+        return Markup(
+            f'<img src="https://ignite-global.s3.ap-southeast-2.amazonaws.com/{model.filename}" style="max-height: 200px;">'
+        )
+    column_formatters = {
+        'filename': _list_thumbnail
+    }
+
+    @action('accept', 'Accept', 'Are you sure you want to accept the selected artworks?')
+    def accept(self, ids):
+        for _id in ids:
+            artwork = Artwork.objects(id=_id).first()
+            newDisplayArtwork = DisplayArtwork(
+                name=artwork.name,
+                email=artwork.email,
+                country=artwork.country,
+                phone=artwork.phone,
+                artname=artwork.artname,
+                medium=artwork.medium,
+                caption=artwork.caption,
+                filename=artwork.filename,
+                published=datetime.now(UTC)
+            )
+            newDisplayArtwork.save(force_insert=True)
+            artwork.delete()
+        flash("Artworks approved successfully")
+        return redirect(url_for('admin.index'))
+
+    @action('reject', 'Reject', 'Are you sure you want to delete the selected artworks?')
+    def reject(self, ids):
+        print(ids)
+        for _id in ids:
+            artwork = Artwork.objects(id=_id).first()
+            artwork.delete()
+            s3.delete_object(
+                Bucket=os.getenv("AWS_BUCKET_NAME"),
+                Key=artwork.filename
+            )
+        flash("Artworks deleted successfully")
+        return redirect(url_for('admin.index'))
+
+class DisplayArtworks(ModelView):
+    column_editable_list = ['name', 'artname', 'medium', 'caption']
+    column_searchable_list = ['name', 'email', 'phone', 'artname', 'medium', 'caption']
+
+    def is_accessible(self):
+        print(current_user.get_id())
+        return current_user.is_authenticated and current_user.get_id() == admin_username
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for('login', next=request.url))
+
+    def get_query(self):
+        artworks = DisplayArtwork.objects
+        return artworks
+    def _list_thumbnail(view, context, model, name):
+        if not model.filename:
+            return ''
+
+        return Markup(
+            f'<img src="https://ignite-global.s3.ap-southeast-2.amazonaws.com/{model.filename}" style="max-height: 200px;">'
+        )
+    def _num_votes(view, context, model, name):
+        return len(model.votes)
+    column_formatters = {
+        'filename': _list_thumbnail,
+        'votes': _num_votes
+    }
+
+    @action('remove', 'Remove', 'Are you sure you want to delete the selected artworks?')
+    def reject(self, ids):
+        for _id in ids:
+            artwork = DisplayArtwork.objects(id=_id).first()
+            s3.delete_object(
+                Bucket=os.getenv("AWS_BUCKET_NAME"),
+                Key=artwork.filename
+            )
+            artwork.delete()
+        flash("Artworks deleted successfully")
+        return redirect(url_for('admin.index'))
+
+class Messages(ModelView):
+    column_searchable_list = ['name', 'email', 'message']
+
+    def is_accessible(self):
+        print(current_user.get_id())
+        return current_user.is_authenticated and current_user.get_id() == admin_username
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for('login', next=request.url))
+
+    def get_query(self):
+        messages = Message.objects
+        return messages
+
+class Users(ModelView):
+    column_searchable_list = ['name', 'email']
+    column_exclude_list = ['password']
+
+    def is_accessible(self):
+        print(current_user.get_id())
+        return current_user.is_authenticated and current_user.get_id() == admin_username
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for('login', next=request.url))
+
+    def get_query(self):
+        users = User.objects
+        return users
+
+app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
+admin = Admin(app, name='ignite', template_mode='bootstrap4')
+admin.add_view(PendingArtworks(Artwork))
+admin.add_view(DisplayArtworks(DisplayArtwork))
+admin.add_view(Messages(Message))
+admin.add_view(Users(User))
 
 """
 @app.route("/ignition", methods=["GET", "POST"])
