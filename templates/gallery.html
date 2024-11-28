@@ -32,7 +32,7 @@
 
                     <div class="modal-footer">
                         {% if current_user.is_authenticated %}
-                            {% if artwork['votes'][current_user.get_id()] is defined%}
+                            {% if current_user.get_id() in artwork.votes %}
                                 <button id="{{ artwork['filename']}}" type="button" class="btn btn-success" onclick='upvote(`{{artwork["filename"]}}`)'>Upvotes: {{artwork['votes']|length}}</button>
                             {% else %}
                                 <button id="{{ artwork['filename']}}" type="button" class="btn btn-outline-success" onclick='upvote(`{{artwork["filename"]}}`)'>Upvotes: {{artwork['votes']|length}}</button>

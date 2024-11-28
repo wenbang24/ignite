@@ -228,6 +228,10 @@ def submit_post():
 admin_username = str(os.getenv("ADMIN_USERNAME"))
 
 admin = Admin(app, name='ignite', theme=Bootstrap4Theme(swatch='cerulean'))
+
+
+
+"""
 @app.route("/ignition", methods=["GET", "POST"])
 @login_required
 def admin():
@@ -295,22 +299,20 @@ def admin():
                     )
                 flash("All artworks deleted successfully")
                 return redirect(url_for("admin"))
-
+"""
 
 @app.route("/upvote", methods=["POST"])
 def upvote():
     if current_user.is_authenticated:
-        artwork = DisplayArtwork.objects(filename=request.form["filename"])
+        artwork = DisplayArtwork.objects(filename=request.form["filename"]).first()
         if artwork:
-            response = None
-            try:
-                artwork.update(pull__votes=current_user.get_id())
-                response = "downvoted"
-            except KeyError:
-                artwork.update(add_to_set__votes=[current_user.get_id()])
-                response = "upvoted"
-            #artwork.votes.update(add_to_set__votes=[current_user.get_id()])
-            return response, 200
+            user_email = current_user.get_id()
+            if user_email in artwork.votes:
+                artwork.update(pull__votes=user_email)
+                return "downvoted", 200
+            else:
+                artwork.update(add_to_set__votes=user_email)
+                return "upvoted", 200
         return "Failed to upvote", 500
     return "Login to upvote", 401
 
