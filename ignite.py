@@ -26,8 +26,7 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from urllib.parse import quote_plus
 from markupsafe import Markup
-from datetime import datetime, UTC
-
+from datetime import datetime
 
 def upload_file(file, filename):
     s3_client = boto3.client(
@@ -270,7 +269,7 @@ class PendingArtworks(ModelView):
                 medium=artwork.medium,
                 caption=artwork.caption,
                 filename=artwork.filename,
-                published=datetime.now(UTC)
+                published=datetime.now()
             )
             newDisplayArtwork.save(force_insert=True)
             artwork.delete()
