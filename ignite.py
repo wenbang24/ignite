@@ -6,7 +6,7 @@ from flask_admin.actions import action
 from flask_mongoengine import MongoEngine
 from flask_admin import Admin
 from flask_admin.contrib.mongoengine import ModelView
-from mongoengine import Document, connect
+from mongoengine import Document, connection
 from mongoengine.fields import (
     EmailField,
     ListField,
@@ -27,6 +27,7 @@ from flask_limiter.util import get_remote_address
 from urllib.parse import quote_plus
 from markupsafe import Markup
 from datetime import datetime
+import typesense
 
 def upload_file(file, filename):
     s3_client = boto3.client(
@@ -70,6 +71,28 @@ app.config['MONGODB_SETTINGS'] = {
 }
 db = MongoEngine(app)
 
+client = typesense.Client({
+    'nodes': [{
+        'host': 'localhost',
+        'port': '8108',
+        'protocol': 'http'
+    }],
+    'api_key': os.getenv('TYPESENSE_API_KEY'),
+    'connection_timeout_seconds': 2
+})
+artwork_schema = {
+    'name': 'artworksearch',
+    'fields': [
+        {'name': 'name', 'type': 'string'},
+        {'name': 'country', 'type': 'string', 'facet': True},
+        {'name': 'artname', 'type': 'string'},
+        {'name': 'medium', 'type': 'string', 'facet': True},
+        {'name': 'caption', 'type': 'string'}
+    ]
+}
+#client.collections['artworksearch'].delete()
+#client.collections.create(artwork_schema)
+#artworkcursor = connection.get_db().display_artwork.watch()
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -138,6 +161,16 @@ def home():
 
 @app.route("/gallery")
 def gallery():
+    if "q" in request.args:
+        query = request.args["q"]
+        search_results = client.collections['artworksearch'].documents.search({
+            'q': query,
+            'query_by': 'name,country,artname,medium,caption'
+        })
+        results = []
+        for hit in search_results['hits']:
+            results.append(DisplayArtwork.objects(name=hit['document']['name'], country=hit['document']['country'], artname=hit['document']['artname'], medium=hit['document']['medium'], caption=hit['document']['caption']).first())
+        return render_template("gallery.html", artworks=results)
     return render_template("gallery.html", artworks=DisplayArtwork.objects)
 
 

@@ -1,16 +1,23 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="text-center mx-auto">
+<div class="text-center mx-auto w-100">
     <h1>Gallery</h1>
     <p>Click on an image to see details and upvote.</p>
+    <div class="container" style="max-width: 400px">
+        <form class="d-flex" id="searchform" onsubmit="search()">
+            <input id="q" type="text" class="form-control m-1" name="q" placeholder="Search" value="{{ request.args.get('q') if request.args.get('q') != None else '' }}">
+            <button type="submit" class="btn btn-primary m-1">Search</button>
+        </form>
+    </div>
+    <h2>{{ artworks | length }} artworks found</h2>
 </div>
 <div class="d-flex flex-wrap justify-content-center">
     {% for artwork in artworks %}
         <button style="border:none;background:none;" type="button" data-bs-toggle="modal" data-bs-target={{ '#' + artwork['filename'] | replace('.', '') | replace('_', '') }}>
             <div style="max-height: 400px; padding: 5px;">
                 <div class="zoom-img">
-                    <img style="max-height: 400px;" src="https://ignite-global.s3.ap-southeast-2.amazonaws.com/{{ artwork['filename'] }}">
+                    <img style="max-height: 400px;" src="https://ignite-global.s3.ap-southeast-2.amazonaws.com/{{ artwork['filename'] }}" alt="{{ artwork['artname'] }}">
                 </div>
             </div>
         </button>
@@ -27,7 +34,7 @@
                     </div>
 
                     <div class="modal-body">
-                        <img style="width: 100%;padding: 5px;" src="https://ignite-global.s3.ap-southeast-2.amazonaws.com/{{ artwork['filename'] }}">
+                        <img style="width: 100%;padding: 5px;" src="https://ignite-global.s3.ap-southeast-2.amazonaws.com/{{ artwork['filename'] }}" alt="{{ artwork['artname'] }}">
                         <p>{{ artwork['caption'] }}</p>
                     </div>
 
@@ -55,7 +62,7 @@
                 method: 'post',
                 body: formData
             });
-            upvotebutton = document.getElementById(filename);
+            const upvotebutton = document.getElementById(filename);
             if (!upvotebutton) {alert('Error: ${filename} button not found');}
             if (upvotebutton.classList.contains('btn-outline-success')) {
                 upvotebutton.classList.remove('btn-outline-success');
@@ -67,7 +74,11 @@
                 upvotebutton.classList.add('btn-outline-success');
                 upvotebutton.innerHTML = 'Upvotes: ' + (parseInt(upvotebutton.innerHTML.split(' ')[1]) - 1);
             }
+        }
 
+        function search() {
+            const query = document.getElementById('q').value;
+            window.location.href = '/gallery?q=' + query;
         }
     </script>
 </div>

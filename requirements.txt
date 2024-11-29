@@ -66,3 +66,4 @@ wheel==0.45.1
 wrapt==1.16.0
 wtf-peewee==3.0.6
 WTForms==3.2.1
+typesense~=0.21.0
