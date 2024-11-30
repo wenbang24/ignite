@@ -108,9 +108,9 @@ class User(Document, UserMixin):
 
 class Artwork(Document):
     name = StringField(required=True)
+    parentname = StringField(required=True)
     email = EmailField(required=True)
     country = StringField(required=True)
-    phone = StringField()
     artname = StringField(required=True)
     medium = StringField(required=True)
     caption = StringField(required=True)
@@ -118,15 +118,14 @@ class Artwork(Document):
 
 class DisplayArtwork(Document):
     name = StringField(required=True)
+    parentname = StringField(required=True)
     email = EmailField(required=True)
     country = StringField(required=True)
-    phone = StringField()
     artname = StringField(required=True)
     medium = StringField(required=True)
     caption = StringField(required=True)
     filename = StringField(required=True)
     votes = ListField(EmailField())
-    published = DateTimeField(required=True)
 
 class Message(Document):
     name = StringField(required=True)
@@ -181,6 +180,10 @@ def contact():
 @app.route("/about")
 def about():
     return render_template("about.html")
+
+@app.route("/winners")
+def winners():
+    return render_template("winners.html")
 
 @app.route("/contact", methods=["POST"])
 @limiter.limit(
@@ -267,7 +270,7 @@ def submit_post():
 admin_username = str(os.getenv("ADMIN_USERNAME"))
 class PendingArtworks(ModelView):
     column_editable_list = ['name', 'artname', 'medium', 'caption']
-    column_searchable_list = ['name', 'email', 'phone', 'artname', 'medium', 'caption']
+    column_searchable_list = ['name', 'parentname', 'email', 'country', 'artname', 'medium', 'caption']
 
     def is_accessible(self):
         print(current_user.get_id())
@@ -324,7 +327,7 @@ class PendingArtworks(ModelView):
 
 class DisplayArtworks(ModelView):
     column_editable_list = ['name', 'artname', 'medium', 'caption']
-    column_searchable_list = ['name', 'email', 'phone', 'artname', 'medium', 'caption']
+    column_searchable_list = ['name', 'parentname', 'email', 'country', 'artname', 'medium', 'caption']
 
     def is_accessible(self):
         print(current_user.get_id())
