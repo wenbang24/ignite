@@ -208,8 +208,10 @@
             <p><strong>Winners Announcement Date:</strong> February 15, 2025</p>
             <h1>Partners & Sponsors</h1>
             <p>We thank our partners and sponsors for their support of the Ignite Art Show.</p>
-            <p>None yet...<a href="/contact">be the first!</a></p>
-
+            <div class="flex-row">
+                <a href="https://www.thevyas.org/"><img src="{{ url_for('static', filename='assets/img/vyas.jpg') }}" alt="Vancouver Youth Advocacy Society" style="max-height: 400px"></a>
+                <a href="https://handsfeetaa.ca/"><img src="{{ url_for('static', filename='assets/img/hfaa.jpg') }}" alt="Canada Hands and Feet of All Abilities Foundation" style="max-height: 200px"></a>
+            </div>
             <h1>Featured Artworks</h1>
             <div class="d-flex flex-wrap justify-content-center">
                 {% for artwork in artworks %}
