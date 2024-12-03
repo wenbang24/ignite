@@ -42,7 +42,7 @@
         </div>
     </section>
     <section>
-        <div class="container h-100 position-relative" style="top: -50px">
+        <div class="container h-100 position-relative mb-5" style="top: 50px">
             <div class="row gy-5 gy-lg-0 row-cols-1 row-cols-md-2 row-cols-lg-3">
                 <div class="col">
                     <div class="card">
@@ -209,8 +209,11 @@
             <h1>Partners & Sponsors</h1>
             <p>We thank our partners and sponsors for their support of the Ignite Art Show.</p>
             <div class="flex-row">
-                <a href="https://www.thevyas.org/"><img src="{{ url_for('static', filename='assets/img/vyas.jpg') }}" alt="Vancouver Youth Advocacy Society" style="max-height: 400px"></a>
-                <a href="https://handsfeetaa.ca/"><img src="{{ url_for('static', filename='assets/img/hfaa.jpg') }}" alt="Canada Hands and Feet of All Abilities Foundation" style="max-height: 200px"></a>
+                <a href="https://www.thevyas.org/"><img src="{{ url_for('static', filename='assets/img/vyas.jpg') }}" alt="Vancouver Youth Advocacy Society" style="max-height: 200px"></a>
+                <a href="https://handsfeetaa.ca/" style="text-decoration: none;">
+                    <img src="{{ url_for('static', filename='assets/img/hfaa.jpg') }}" alt="Canada Hands and Feet of All Abilities Foundation" style="max-height: 150px">
+                    <img src="{{ url_for('static', filename='assets/img/hfaatext.jpg') }}" alt="Canada Hands and Feet of All Abilities Foundation" style="max-height: 70px">
+                </a>
             </div>
             <h1>Featured Artworks</h1>
             <div class="d-flex flex-wrap justify-content-center">
