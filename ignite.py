@@ -249,8 +249,8 @@ def submit_post():
             newArtwork = Artwork(
                 name=request.form["name"],
                 email=current_user.get_id(),
+                parentname=request.form["parentname"],
                 country=request.form["country"],
-                phone=request.form["phone"],
                 artname=request.form["artname"],
                 medium=request.form["medium"],
                 caption=request.form["caption"],
@@ -299,13 +299,12 @@ class PendingArtworks(ModelView):
             newDisplayArtwork = DisplayArtwork(
                 name=artwork.name,
                 email=artwork.email,
+                parentname=artwork.parentname,
                 country=artwork.country,
-                phone=artwork.phone,
                 artname=artwork.artname,
                 medium=artwork.medium,
                 caption=artwork.caption,
                 filename=artwork.filename,
-                published=datetime.now()
             )
             newDisplayArtwork.save(force_insert=True)
             artwork.delete()
@@ -400,76 +399,6 @@ admin.add_view(PendingArtworks(Artwork))
 admin.add_view(DisplayArtworks(DisplayArtwork))
 admin.add_view(Messages(Message))
 admin.add_view(Users(User))
-
-"""
-@app.route("/ignition", methods=["GET", "POST"])
-@login_required
-def admin():
-    if not current_user.get_id() == admin_username:
-        flash("You do not have access to that page.")
-        return redirect(url_for("home"))
-    if request.method == "GET":
-        return render_template("admin.html", artworks=Artwork.objects)
-    elif request.method == "POST":
-        if current_user.is_authenticated:
-            if request.form["action"] == "accept":
-                artwork = Artwork.objects(filename=request.form["filename"]).first()
-                if artwork:
-                    newDisplayArtwork = DisplayArtwork(
-                        name=artwork.name,
-                        email=artwork.email,
-                        country=artwork.country,
-                        phone=artwork.phone,
-                        artname=artwork.artname,
-                        medium=artwork.medium,
-                        caption=artwork.caption,
-                        filename=artwork.filename,
-                        published=datetime.now(UTC)
-                    )
-                    newDisplayArtwork.save(force_insert=True)
-                    artwork.delete()
-                    flash("Artwork approved successfully")
-                    return redirect(url_for("admin"))
-                flash("Something went wrong")
-                return redirect(url_for("admin"))
-            elif request.form["action"] == "reject":
-                artwork = Artwork.objects(filename=request.form["filename"]).first()
-                if artwork:
-                    artwork.delete()
-                    s3.delete_object(
-                        Bucket=os.getenv("AWS_BUCKET_NAME"),
-                        Key=request.form["filename"],
-                    )
-                    flash("Artwork deleted successfully")
-                    return redirect(url_for("admin"))
-                flash("Something went wrong")
-                return redirect(url_for("admin"))
-            elif request.form["action"] == "acceptall":
-                for artwork in Artwork.objects:
-                    newDisplayArtwork = DisplayArtwork(
-                        name=artwork.name,
-                        email=artwork.email,
-                        country=artwork.country,
-                        phone=artwork.phone,
-                        artname=artwork.artname,
-                        medium=artwork.medium,
-                        caption=artwork.caption,
-                        filename=artwork.filename,
-                        published=datetime.now(UTC)
-                    )
-                    newDisplayArtwork.save(force_insert=True)
-                    artwork.delete()
-                flash("All artworks approved successfully")
-                return redirect(url_for("admin"))
-            elif request.form["action"] == "rejectall":
-                for artwork in Artwork.objects:
-                    artwork.delete()
-                    s3.delete_object(
-                        Bucket=os.getenv("AWS_BUCKET_NAME"), Key=artwork["filename"]
-                    )
-                flash("All artworks deleted successfully")
-                return redirect(url_for("admin"))
-"""
 
 @app.route("/upvote", methods=["POST"])
 def upvote():
