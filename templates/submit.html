@@ -5,17 +5,18 @@
         <div class="container position-relative">
             <div class="row d-flex justify-content-center">
                 <div class="col-md-6 col-xl-6 mx-auto">
-                    <h2>Submit an Artwork</h2>
-                    <p class="w-lg-50">We at Ignite would love to see your artwork! Fill in your details and upload your
-                        artwork.</p>
-                    <h3>Submission Guidelines</h3>
-                    <h4>Eligibility Criteria</h4>
+                    <div class="p-2 rounded-3 text-center mb-2" style="background-color: #e8e8e8">
+                        <h2>Submit an Artwork</h2>
+                        <p class="w-lg-50">We at Ignite would love to see your artwork! Fill in your details and upload your
+                            artwork.</p>
+                    </div>
+                    <h3>Eligibility Criteria</h3>
                     <ul>
                         <li><strong>Participants:</strong> Open to entrants from all countries and regions worldwide
                         </li>
                         <li><strong>Theme: </strong>Open theme expressing "My World"</li>
                     </ul>
-                    <h4>Artwork Specifications</h4>
+                    <h3>Artwork Specifications</h3>
                     <ul>
                         <li><strong>Medium:</strong> Any medium is accepted: Painting, drawing, digital art, sculpture,
                             etc.
@@ -29,7 +30,6 @@
                 <div class="col-md-8 col-lg-6 col-xl-5 col-xxl-4">
                     <div class="card mb-5">
                         <div class="card-body p-sm-5">
-                            <h2 class="text-center mb-4">Submit an Artwork</h2>
                             {% if current_user.is_authenticated %}
                             {% else %}
                                 <div class="alert alert-warning">Please <a href="{{ url_for('login') }}">login</a> to
