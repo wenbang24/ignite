@@ -53,7 +53,7 @@ def upload_file(file, filename):
 
 load_dotenv()
 app = Flask(__name__)
-app.config["MAX_CONTENT_LENGTH"] = 16 * 1000 * 1000
+app.config["MAX_CONTENT_LENGTH"] = 32 * 1000 * 1000
 #app.config['SERVER_NAME'] ="ignite-global.org"
 app.secret_key = os.getenv("SECRET_KEY")
 
@@ -155,7 +155,7 @@ ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "webp"}
 
 @app.route("/")
 def home():
-    return render_template("index.html", artworks=DisplayArtwork.objects[:3])
+    return render_template("index.html")
 
 
 @app.route("/gallery")
