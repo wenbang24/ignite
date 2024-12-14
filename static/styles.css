@@ -23,3 +23,27 @@
 #phoneInputDiv > div {
     width: 100%;
 }
+
+.navbar-nav {
+  width: calc(100vw - 24px);
+}
+
+.navbar-brand {
+  position: absolute;
+  top: calc(0px + 8px);
+}
+
+.move-right a {
+  display: inline-block;
+}
+
+@media screen and (max-width: 767px) {
+  .navbar-brand {
+    position: relative;
+    top: 0;
+  }
+
+  .move-right a {
+    display: block;
+  }
+}
