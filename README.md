@@ -1,6 +1,6 @@
 # Ignite Global Gifted Child Art Show
-cool website
+a cool website for the ignite global gifted child art show
 
-check it out at [https://ignite-global.org](https://ignite-global.org)
+check it out at [https://ignite-global.org](https://ignite-global.org); maybe even submit some artwork?
 
 made with flask, mongodb, and bootstrap 5
