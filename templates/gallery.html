@@ -1,85 +1,127 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="text-center mx-auto w-100">
-    <h1>Gallery</h1>
-    <p>Click on an image to see details and upvote.</p>
-    <div class="container" style="max-width: 400px">
-        <form class="d-flex" id="searchform" onsubmit="search()">
-            <input id="q" type="text" class="form-control m-1" name="q" placeholder="Search" value="{{ request.args.get('q') if request.args.get('q') != None else '' }}">
-            <button type="submit" class="btn btn-primary m-1">Search</button>
-        </form>
-    </div>
-    <h2>{{ artworks | length }} artworks found</h2>
-</div>
-<div class="d-flex flex-wrap justify-content-center">
-    {% for artwork in artworks %}
-        <button style="border:none;background:none;" type="button" data-bs-toggle="modal" data-bs-target={{ '#' + artwork['filename'] | replace('.', '') | replace('_', '') }}>
-            <div style="height: 400px; width: 400px; padding: 5px;">
-                <div class="zoom-img">
-                    <img style="object-fit: contain; height: 390px; width: 390px;" src="https://ignite-global.s3.ap-southeast-2.amazonaws.com/{{ artwork['filename'] }}" alt="{{ artwork['artname'] }}">
-                </div>
-            </div>
-        </button>
-        <div class="modal" id="{{ artwork['filename'] | replace('.', '') | replace('_', '') }}">
-            <div class="modal-dialog modal-lg modal-dialog-scrollable">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">
-                            {{ artwork['artname'] }} <i>({{ artwork['medium'] }})</i><br>
-                            <small>Author: {{ artwork['name'] }}</small><br>
-                            <small>Country: {{ artwork['country'] }}</small>
-                        </h4>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-
-                    <div class="modal-body">
-                        <img style="max-height: 50vh; max-width: 100%; padding: 5px; margin: auto;" src="https://ignite-global.s3.ap-southeast-2.amazonaws.com/{{ artwork['filename'] }}" alt="{{ artwork['artname'] }}">
-                        <p>{{ artwork['caption'] }}</p>
-                    </div>
-
-                    <div class="modal-footer">
-                        {% if current_user.is_authenticated %}
-                            {% if current_user.get_id() in artwork.votes %}
-                                <button id="{{ artwork['filename']}}" type="button" class="btn btn-success" onclick='upvote(`{{artwork["filename"]}}`)'>Upvotes: {{artwork['votes']|length}}</button>
-                            {% else %}
-                                <button id="{{ artwork['filename']}}" type="button" class="btn btn-outline-success" onclick='upvote(`{{artwork["filename"]}}`)'>Upvotes: {{artwork['votes']|length}}</button>
-                            {% endif %}
-                        {% else %}
-                            <a href="/login" class="btn btn-success">Login to Upvote</a>
-                        {% endif %}
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
+    <div class="text-center mx-auto w-100">
+        <h1>Gallery</h1>
+        <p>Click on an image to see details and upvote.</p>
+        <div class="container" style="max-width: 400px">
+            <form class="d-flex" id="searchform" onsubmit="search()">
+                <input id="q" type="text" class="form-control m-1" name="q" placeholder="Search"
+                       value="{{ request.args.get('q') if request.args.get('q') != None else '' }}">
+                <button type="submit" class="btn btn-primary m-1">Search</button>
+            </form>
         </div>
-    {% endfor %}
-    <script type="text/javascript">
-        function upvote(filename) {
-            const formData = new FormData();
-            formData.append('filename', filename);
-            fetch('/upvote', {
-                method: 'post',
-                body: formData
-            });
-            const upvotebutton = document.getElementById(filename);
-            if (!upvotebutton) {alert('Error: ${filename} button not found');}
-            if (upvotebutton.classList.contains('btn-outline-success')) {
-                upvotebutton.classList.remove('btn-outline-success');
-                upvotebutton.classList.add('btn-success');
-                upvotebutton.innerHTML = 'Upvotes: ' + (parseInt(upvotebutton.innerHTML.split(' ')[1]) + 1);
-            }
-            else if (upvotebutton.classList.contains('btn-success')) {
-                upvotebutton.classList.remove('btn-success');
-                upvotebutton.classList.add('btn-outline-success');
-                upvotebutton.innerHTML = 'Upvotes: ' + (parseInt(upvotebutton.innerHTML.split(' ')[1]) - 1);
-            }
-        }
+        <h2>{{ artworks | length }} artworks found</h2>
+    </div>
+    <div class="container justify-content-center">
+        {% for artwork in artworks %}
+            <div class="d-flex flex-wrap py-3">
+                <button style="border:none;background:none;" type="button" data-bs-toggle="modal"
+                        data-bs-target={{ '#' + artwork['filename'] | replace('.', '') | replace('_', '') }}>
+                    <div style="height: 400px; width: 400px; padding: 5px; background: #888888">
+                        <div class="zoom-img">
+                            <img style="object-fit: contain; height: 390px; width: 390px; background: #ffffff"
+                                 src="https://ignite-global.s3.ap-southeast-2.amazonaws.com/{{ artwork['filename'] }}"
+                                 alt="{{ artwork['artname'] }}">
+                        </div>
+                    </div>
+                </button>
+                <div class="modal" id="{{ artwork['filename'] | replace('.', '') | replace('_', '') }}">
+                    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">
+                                    {{ artwork['artname'] }} <i>({{ artwork['medium'] }})</i><br>
+                                    <small>Author: {{ artwork['name'] }}</small><br>
+                                    <small>Country: {{ artwork['country'] }}</small>
+                                </h4>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
 
-        function search() {
-            const query = document.getElementById('q').value;
-            window.location.href = '/gallery?q=' + query;
-        }
-    </script>
-</div>
+                            <div class="modal-body">
+                                <img style="max-height: 50vh; max-width: 100%; padding: 5px; margin: auto;"
+                                     src="https://ignite-global.s3.ap-southeast-2.amazonaws.com/{{ artwork['filename'] }}"
+                                     alt="{{ artwork['artname'] }}">
+                                <p>{{ artwork['caption'] }}</p>
+                            </div>
+
+                            <div class="modal-footer">
+                                {% if current_user.is_authenticated %}
+                                    {% if current_user.get_id() in artwork.votes %}
+                                        <button name="{{ artwork['filename'] }}" type="button" class="btn btn-success"
+                                                onclick='upvote(`{{ artwork["filename"] }}`)'>
+                                            Upvotes: {{ artwork['votes']|length }}</button>
+                                    {% else %}
+                                        <button name="{{ artwork['filename'] }}" type="button"
+                                                class="btn btn-outline-success"
+                                                onclick='upvote(`{{ artwork["filename"] }}`)'>
+                                            Upvotes: {{ artwork['votes']|length }}</button>
+                                    {% endif %}
+                                {% else %}
+                                    <a href="/login" class="btn btn-success">Login to Upvote</a>
+                                {% endif %}
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="pl-5">
+                    <h2>{{ artwork['artname'] }} <em>({{ artwork['medium'] }})</em></h2>
+                    <h2>Artist: {{ artwork['name'] }}</h2>
+                    <h4>Country: {{ artwork['country'] }}</h4>
+                    <p>{{ artwork['caption'] }}</p>
+                    {% if current_user.is_authenticated %}
+                        {% if current_user.get_id() in artwork.votes %}
+                            <button name="{{ artwork['filename'] }}" type="button" class="btn btn-success"
+                                    onclick='upvote(`{{ artwork["filename"] }}`)'>
+                                Upvotes: {{ artwork['votes']|length }}</button>
+                        {% else %}
+                            <button name="{{ artwork['filename'] }}" type="button"
+                                    class="btn btn-outline-success"
+                                    onclick='upvote(`{{ artwork["filename"] }}`)'>
+                                Upvotes: {{ artwork['votes']|length }}</button>
+                        {% endif %}
+                    {% else %}
+                        <a href="/login" class="btn btn-success">Login to Upvote</a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+        <script type="text/javascript">
+            if (!Array.prototype.last){
+                Array.prototype.last = function(){
+                    return this[this.length - 1];
+                };
+            }
+            function upvote(filename) {
+                const formData = new FormData();
+                formData.append('filename', filename);
+                fetch('/upvote', {
+                    method: 'post',
+                    body: formData
+                });
+                const upvotebuttons = document.getElementsByName(filename);
+                if (!upvotebuttons) {
+                    alert('Error: ${filename} button not found');
+                }
+                for (let i = 0; i < upvotebuttons.length; i++) {
+                    const upvotebutton = upvotebuttons[i];
+                    if (upvotebutton.classList.contains('btn-outline-success')) {
+                        upvotebutton.classList.remove('btn-outline-success');
+                        upvotebutton.classList.add('btn-success');
+                        upvotebutton.innerHTML = 'Upvotes: ' + (parseInt(upvotebutton.innerHTML.split(' ').last()) + 1);
+                    } else if (upvotebutton.classList.contains('btn-success')) {
+                        upvotebutton.classList.remove('btn-success');
+                        upvotebutton.classList.add('btn-outline-success');
+                        upvotebutton.innerHTML = 'Upvotes: ' + (parseInt(upvotebutton.innerHTML.split(' ').last()) - 1);
+                    }
+                }
+            }
+
+            function search() {
+                const query = document.getElementById('q').value;
+                window.location.href = '/gallery?q=' + query;
+            }
+        </script>
+    </div>
 {% endblock %}
