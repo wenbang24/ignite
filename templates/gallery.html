@@ -16,7 +16,7 @@
     <div class="container justify-content-center">
         {% for artwork in artworks %}
             <div class="d-flex flex-wrap py-3">
-                <button style="border:none;background:none;" type="button" data-bs-toggle="modal"
+                <button style="border:none;background:none;" class="px-5" type="button" data-bs-toggle="modal"
                         data-bs-target={{ '#' + artwork['filename'] | replace('.', '') | replace('_', '') }}>
                     <div style="height: 410px; width: 410px; padding: 10px; background: #4a3600">
                         <div class="zoom-img">
@@ -65,7 +65,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="pl-5">
+                <div class="pl-5" style="min-width: 300px; max-width: calc(100% - 430px)">
                     <h2>{{ artwork['artname'] }} <em>({{ artwork['medium'] }})</em></h2>
                     <h2>Artist: {{ artwork['name'] }}</h2>
                     <h4>Country: {{ artwork['country'] }}</h4>
