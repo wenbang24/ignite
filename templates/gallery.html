@@ -15,9 +15,9 @@
 <div class="d-flex flex-wrap justify-content-center">
     {% for artwork in artworks %}
         <button style="border:none;background:none;" type="button" data-bs-toggle="modal" data-bs-target={{ '#' + artwork['filename'] | replace('.', '') | replace('_', '') }}>
-            <div style="max-height: 400px; padding: 5px;">
+            <div style="height: 400px; width: 400px; padding: 5px;">
                 <div class="zoom-img">
-                    <img style="max-height: 400px;" src="https://ignite-global.s3.ap-southeast-2.amazonaws.com/{{ artwork['filename'] }}" alt="{{ artwork['artname'] }}">
+                    <img style="object-fit: contain; height: 390px; width: 390px;" src="https://ignite-global.s3.ap-southeast-2.amazonaws.com/{{ artwork['filename'] }}" alt="{{ artwork['artname'] }}">
                 </div>
             </div>
         </button>
@@ -34,7 +34,7 @@
                     </div>
 
                     <div class="modal-body">
-                        <img style="max-height: 50vh; max-width: 100%; padding: 5px;" src="https://ignite-global.s3.ap-southeast-2.amazonaws.com/{{ artwork['filename'] }}" alt="{{ artwork['artname'] }}">
+                        <img style="max-height: 50vh; max-width: 100%; padding: 5px; margin: auto;" src="https://ignite-global.s3.ap-southeast-2.amazonaws.com/{{ artwork['filename'] }}" alt="{{ artwork['artname'] }}">
                         <p>{{ artwork['caption'] }}</p>
                     </div>
 
