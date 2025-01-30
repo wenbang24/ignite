@@ -28,3 +28,5 @@ To run the project locally, follow these steps:
     - `templates/gallery.html` lines 24 & 43
     - `ignite.py` lines 289 & 346
 6. Run the Flask app by running `flask run --cert=adhoc`
+7. Visit `https://localhost:5000` in your browser
+8. Voila!
