@@ -23,3 +23,8 @@ To run the project locally, follow these steps:
     - `DB_URI`: the URI for the MongoDB instance
     - `SECRET_KEY`: a secret key for the Flask app
     - `TYPESENSE_API_KEY`: the API key for the Typesense instance
+4. Change the S3 bucket policy to allow public access to objects
+5. Change all instances of `ignite-global.s3.ap-southeast-2.amazonaws.com` to use the correct S3 bucket URL
+    - `templates/gallery.html` lines 24 & 43
+    - `ignite.py` lines 289 & 346
+6. Run the Flask app by running `flask run --cert=adhoc`
