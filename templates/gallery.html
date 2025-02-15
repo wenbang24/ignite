@@ -11,7 +11,9 @@
                 <button type="submit" class="btn btn-primary m-1">Search</button>
             </form>
         </div>
-        <h2>{{ artworks | length }} artworks found</h2>
+        {% if request.args.get('q') != None %}
+            <h4>{{ artworks | length }} artworks found</h4>
+        {% endif %}
     </div>
     <div class="container justify-content-center">
         {% for artwork in artworks %}
@@ -68,7 +70,7 @@
                 <div class="pl-5" style="min-width: 300px; max-width: calc(100% - 510px)">
                     <h2>{{ artwork['artname'] }} <em>({{ artwork['medium'] }})</em></h2>
                     <h2>Artist: {{ artwork['name'] }}</h2>
-                    <h4>Country: {{ artwork['country'] }}</h4>
+                    <h2>Country: {{ artwork['country'] }}</h2>
                     <p>{{ artwork['caption'] }}</p>
                     {% if current_user.is_authenticated %}
                         {% if current_user.get_id() in artwork.votes %}
