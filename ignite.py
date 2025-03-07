@@ -246,7 +246,6 @@ def submit_post():
             flash(
                 "Thanks for submitting! Your artwork is currently under review by our team."
             )
-            print(*request.form)
             newArtwork = Artwork(
                 name=request.form["name"],
                 email=current_user.get_id(),
@@ -307,6 +306,13 @@ class PendingArtworks(ModelView):
                 filename=artwork.filename,
             )
             newDisplayArtwork.save(force_insert=True)
+            client.collections['artworksearch'].documents.create({
+                'name': artwork.name,
+                'country': artwork.country,
+                'artname': artwork.artname,
+                'medium': artwork.medium,
+                'caption': artwork.caption
+            })
             artwork.delete()
         flash("Artworks approved successfully")
         return redirect(url_for('admin.index'))
