@@ -274,7 +274,6 @@ class PendingArtworks(ModelView):
     column_searchable_list = ['name', 'parentname', 'email', 'country', 'artname', 'medium', 'caption']
 
     def is_accessible(self):
-        print(current_user.get_id())
         return current_user.is_authenticated and current_user.get_id() == admin_username
     def inaccessible_callback(self, name, **kwargs):
         return redirect(url_for('login', next=request.url))
@@ -314,7 +313,6 @@ class PendingArtworks(ModelView):
 
     @action('reject', 'Reject', 'Are you sure you want to delete the selected artworks?')
     def reject(self, ids):
-        print(ids)
         for _id in ids:
             artwork = Artwork.objects(id=_id).first()
             artwork.delete()
@@ -326,11 +324,10 @@ class PendingArtworks(ModelView):
         return redirect(url_for('admin.index'))
 
 class DisplayArtworks(ModelView):
-    column_editable_list = ['id', 'name', 'artname', 'medium', 'caption']
+    column_editable_list = ['name', 'artname', 'medium', 'caption']
     column_searchable_list = ['name', 'parentname', 'email', 'country', 'artname', 'medium', 'caption']
 
     def is_accessible(self):
-        print(current_user.get_id())
         return current_user.is_authenticated and current_user.get_id() == admin_username
 
     def inaccessible_callback(self, name, **kwargs):
