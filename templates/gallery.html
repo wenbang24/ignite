@@ -18,6 +18,7 @@
     <div class="container justify-content-center">
         {% for artwork in artworks %}
             <div class="d-flex flex-wrap py-3">
+                <p><strong>{{ artwork['id'] }}</strong></p>
                 <button style="border:none;background:none;" class="px-5" type="button" data-bs-toggle="modal"
                         data-bs-target={{ '#' + artwork['filename'] | replace('.', '') | replace('_', '') }}>
                     <div style="height: 410px; width: 410px; padding: 10px; background: #4a3600">

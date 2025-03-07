@@ -11,7 +11,7 @@ from mongoengine.fields import (
     EmailField,
     ListField,
     StringField,
-    DateTimeField
+    SequenceField
 )
 from flask_login import (
     LoginManager,
@@ -117,6 +117,7 @@ class Artwork(Document):
     filename = StringField(required=True)
 
 class DisplayArtwork(Document):
+    id = SequenceField(primary_key=True)
     name = StringField(required=True)
     parentname = StringField(required=True)
     email = EmailField(required=True)
@@ -325,7 +326,7 @@ class PendingArtworks(ModelView):
         return redirect(url_for('admin.index'))
 
 class DisplayArtworks(ModelView):
-    column_editable_list = ['name', 'artname', 'medium', 'caption']
+    column_editable_list = ['id', 'name', 'artname', 'medium', 'caption']
     column_searchable_list = ['name', 'parentname', 'email', 'country', 'artname', 'medium', 'caption']
 
     def is_accessible(self):
