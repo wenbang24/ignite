@@ -1,120 +1,235 @@
-{% extends "base.html" %}
-{% block content %}
-    <div class="container">
-        <h2>Our Mission</h2>
-        <p>Our mission is to provide a global platform for gifted children to showcase their artistic talents, inspire
-            creativity, and cultivate a love for the arts.</p>
-        <h2>Our Story</h2>
-        <p>The Ignite Art Show was founded by a group of high school students who love art and value education. They aim
-            to create a global stage for young artists, helping them express themselves through art and find confidence
-            and direction.</p>
-        <h2>Team Members</h2>
-        <div class="row">
-            <div class="col shadow p-3 m-2 rounded-3">
-                <h5>Abereena Xu - Founder & President</h5>
-                <p>Leading the overall vision, strategic planning, and collaboration efforts for the art show.</p>
+{% extends "base.html" %} {% block content %}
+<div class="container">
+    <h2>Our Mission</h2>
+    <p>
+        Our mission is to provide a global platform for gifted children to
+        showcase their artistic talents, inspire creativity, and cultivate a
+        love for the arts.
+    </p>
+    <h2>Our Story</h2>
+    <p>
+        The Ignite Art Show was founded by a group of high school students who
+        love art and value education. They aim to create a global stage for
+        young artists, helping them express themselves through art and find
+        confidence and direction.
+    </p>
+    <h2>Team Members</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <h4>President & Founder: Zena Su</h4>
+            <p>
+                Growing up, art gave Zena a way to express herself when words
+                didn’t feel enough. It became her voice when she needed to
+                communicate feelings, dreams, or ideas that couldn’t easily be
+                put into sentences. Art has the power to connect, to heal, and
+                to inspire, and she believes everyone deserves the chance to
+                experience that power firsthand.
+            </p>
+            <p>
+                That’s why she is passionate about helping this organization
+                bring this event to life. She has seen how transformative art
+                can be, especially for autistic kids. For many of them,
+                traditional forms of communication may be difficult, but through
+                art, they can express their unique perspectives, their vibrant
+                imaginations, and their voices in ways the world often
+                overlooks. This event isn’t just about showcasing artwork, it’s
+                about giving these kids a platform to be seen and heard. It’s
+                about creating a space where their talents are celebrated, their
+                stories are valued, and their creativity is allowed to shine.
+                Zena is incredibly honored to play a part in this effort and
+                looks forward to seeing the amazing art and stories that come
+                from it.
+            </p>
+        </div>
+        <div class="col-md-6">
+            <img
+                src="{{ url_for('static', filename='assets/img/zena.jpg') }}"
+                class="img-fluid rounded-3"
+                alt="Zena Su Photo"
+                style="max-height: 50vh"
+            />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col shadow p-3 m-2 rounded-3">
+            <h5>Cici Yao - Founder & Operations Lead</h5>
+            <p>
+                Overseeing the event's operations, logistics, and resource
+                management.
+            </p>
+        </div>
+        <div class="col shadow p-3 m-2 rounded-3">
+            <h5>Benjamin Wang - Founder & Vice President</h5>
+            <p>
+                Managing web development, UI/UX design, and technical support
+                for the platform
+            </p>
+        </div>
+    </div>
+    <h2 class="mt-3">Judges</h2>
+    <div class="row">
+        <div class="col">
+            <div class="shadow p-3 m-2 rounded-3">
+                <img
+                    src="{{ url_for('static', filename='assets/img/judges/milakostic.jpg') }}"
+                    class="img-fluid pb-2"
+                    alt="Mila Kostic Photo"
+                />
+                <h5>Mila Kostic</h5>
+                <p>
+                    Mila Kostic is an established artist based in Vancouver,
+                    Canada. Her work is represented in corporate and private
+                    collections and galleries in Canada, United States, Europe
+                    and China. Internationally recognized for her abstract
+                    paintings and an interest in cultural identity is at the
+                    forefront of her current artistic practice. Mila is known
+                    predominantly for her large-scale abstract acrylic and oil
+                    paintings on canvas. Her work revolves around the
+                    experimentation with lines and colour; and thematically on
+                    the processes of creating.
+                </p>
+                <div class="row">
+                    <div class="col">
+                        <img
+                            src="{{ url_for('static', filename='assets/img/judges/milakostic1.jpg') }}"
+                            class="img-fluid pb-2"
+                            alt="Mila Kostic Art"
+                        />
+                    </div>
+                    <div class="col">
+                        <img
+                            src="{{ url_for('static', filename='assets/img/judges/milakostic2.jpg') }}"
+                            class="img-fluid pb-2"
+                            alt="Mila Kostic Art"
+                        />
+                        <img
+                            src="{{ url_for('static', filename='assets/img/judges/milakostic3.jpg') }}"
+                            class="img-fluid pb-2"
+                            alt="Mila Kostic Art"
+                        />
+                    </div>
+                </div>
             </div>
-            <div class="col shadow p-3 m-2 rounded-3">
-                <h5>Zena Su - Founder & Communications Lead</h5>
-                <p>Responsible for external communications, media outreach, and brand representation.</p>
-            </div>
-            <div class="col shadow p-3 m-2 rounded-3">
-                <h5>Cici Yao - Founder & Operations Lead</h5>
-                <p>Overseeing the event's operations, logistics, and resource management.</p>
-            </div>
-            <div class="col shadow p-3 m-2 rounded-3">
-                <h5>Benjamin Wang - Founder & Technical Lead</h5>
-                <p>Managing web development, UI/UX design, and technical support for the platform</p>
+            <div class="shadow p-3 m-2 rounded-3">
+                <img
+                    src="{{ url_for('static', filename='assets/img/judges/sallykarimi.jpg') }}"
+                    class="img-fluid pb-2"
+                    alt="Sally Karimi Photo"
+                />
+                <h5>Sally Karimi</h5>
+                <p>
+                    Sally Karimi is an art educator and designer with over 16
+                    years of experience in art education and design. She has
+                    dedicated her career to inspiring creativity and fostering
+                    growth in young artists. As an art and design teacher at
+                    Collingwood High School in West Vancouver, she integrates
+                    innovative tools such as AR/VR into her teaching to engage
+                    students and enhance their artistic expression. Her academic
+                    journey includes ranking first nationwide in the Master’s
+                    entrance exam for Industrial Design and earning a master’s
+                    degree from Amirkabir University of Technology. Beyond
+                    education, she has led collaborative art projects and
+                    mentored students in creating portfolios that have secured
+                    placements in top programs. Passionate about empowering
+                    young artists, she strives to help them connect with their
+                    communities and develop their unique voices through art.
+                </p>
+                <div class="row">
+                    <div class="col">
+                        <img
+                            src="{{ url_for('static', filename='assets/img/judges/sallykarimi1.jpg') }}"
+                            class="img-fluid pb-2"
+                            alt="Sally Karimi Art"
+                        />
+                        <img
+                            src="{{ url_for('static', filename='assets/img/judges/sallykarimi3.jpg') }}"
+                            class="img-fluid pb-2"
+                            alt="Sally Karimi Art"
+                        />
+                    </div>
+                    <div class="col">
+                        <img
+                            src="{{ url_for('static', filename='assets/img/judges/sallykarimi2.jpg') }}"
+                            class="img-fluid pb-2"
+                            alt="Sally Karimi Art"
+                        />
+                        <img
+                            src="{{ url_for('static', filename='assets/img/judges/sallykarimi4.jpg') }}"
+                            class="img-fluid pb-2"
+                            alt="Sally Karimi Art"
+                        />
+                    </div>
+                </div>
             </div>
         </div>
-        <h2>Judges</h2>
-        <div class="row">
-            <div class="col">
-                <div class="shadow p-3 m-2 rounded-3">
-                    <img src="{{ url_for('static', filename='assets/img/judges/milakostic.jpg') }}"
-                         class="img-fluid pb-2" alt="Mila Kostic Photo">
-                    <h5>Mila Kostic</h5>
-                    <p>Mila Kostic is an established artist based in Vancouver, Canada. Her work is represented in
-                        corporate and private collections and galleries in Canada, United States, Europe and China.
-                        Internationally recognized for her abstract paintings and an interest in cultural identity is at
-                        the forefront of her current artistic practice. Mila is known predominantly for her large-scale
-                        abstract acrylic and oil paintings on canvas. Her work revolves around the experimentation with
-                        lines and colour; and thematically on the processes of creating.</p>
-                    <div class="row">
-                        <div class="col">
-                            <img src="{{ url_for('static', filename='assets/img/judges/milakostic1.jpg') }}"
-                                 class="img-fluid pb-2" alt="Mila Kostic Art">
-                        </div>
-                        <div class="col">
-                            <img src="{{ url_for('static', filename='assets/img/judges/milakostic2.jpg') }}"
-                                 class="img-fluid pb-2" alt="Mila Kostic Art">
-                            <img src="{{ url_for('static', filename='assets/img/judges/milakostic3.jpg') }}"
-                                 class="img-fluid pb-2" alt="Mila Kostic Art">
-                        </div>
+        <div class="col">
+            <div class="shadow p-3 m-2 rounded-3">
+                <img
+                    src="{{ url_for('static', filename='assets/img/judges/cuiping.jpg') }}"
+                    class="img-fluid pb-2"
+                    alt="Cuiping Wan Photo"
+                />
+                <h5>Cuiping Wan</h5>
+                <p>
+                    Cuiping Wan, a graduate of Hubei Institute of Fine Arts, is
+                    a renowned painter recognized for her expertise in oil
+                    painting. Her work blends figurative and realistic
+                    techniques to uncover the inherent abstraction within
+                    objects. Among her notable works is the historical
+                    illustrated book series Painting the Xinhai Revolution,
+                    which vividly depicts the course of China's modern
+                    revolutionary history through over 500 paintings. Wan has
+                    ventured into various art forms and currently serves as an
+                    academic judge for the China Sketching Association, wielding
+                    significant influence in the art world and shaping the next
+                    generation of artists.
+                </p>
+                <div class="row">
+                    <div class="col">
+                        <img
+                            src="{{ url_for('static', filename='assets/img/judges/cuiping1.jpg') }}"
+                            class="img-fluid pb-2"
+                            alt="Cuiping Wan Art"
+                        />
+                        <img
+                            src="{{ url_for('static', filename='assets/img/judges/cuiping3.jpg') }}"
+                            class="img-fluid pb-2"
+                            alt="Cuiping Wan Art"
+                        />
                     </div>
-                </div>
-                <div class="shadow p-3 m-2 rounded-3">
-                    <img src="{{ url_for('static', filename='assets/img/judges/sallykarimi.jpg') }}"
-                         class="img-fluid pb-2" alt="Sally Karimi Photo">
-                    <h5>Sally Karimi</h5>
-                    <p>Sally Karimi is an art educator and designer with over 16 years of experience in art education
-                        and design. She has dedicated her career to inspiring creativity and fostering growth in young
-                        artists. As an art and design teacher at Collingwood High School in West Vancouver, she
-                        integrates innovative tools such as AR/VR into her teaching to engage students and enhance their
-                        artistic expression. Her academic journey includes ranking first nationwide in the Master’s
-                        entrance exam for Industrial Design and earning a master’s degree from Amirkabir University of
-                        Technology. Beyond education, she has led collaborative art projects and mentored students in
-                        creating portfolios that have secured placements in top programs. Passionate about empowering
-                        young artists, she strives to help them connect with their communities and develop their unique
-                        voices through art.</p>
-                    <div class="row">
-                        <div class="col">
-                            <img src="{{ url_for('static', filename='assets/img/judges/sallykarimi1.jpg') }}"
-                                 class="img-fluid pb-2" alt="Sally Karimi Art">
-                            <img src="{{ url_for('static', filename='assets/img/judges/sallykarimi3.jpg') }}"
-                                 class="img-fluid pb-2" alt="Sally Karimi Art">
-                        </div>
-                        <div class="col">
-                            <img src="{{ url_for('static', filename='assets/img/judges/sallykarimi2.jpg') }}"
-                                 class="img-fluid pb-2" alt="Sally Karimi Art">
-                            <img src="{{ url_for('static', filename='assets/img/judges/sallykarimi4.jpg') }}"
-                                 class="img-fluid pb-2" alt="Sally Karimi Art">
-                        </div>
+                    <div class="col">
+                        <img
+                            src="{{ url_for('static', filename='assets/img/judges/cuiping2.jpg') }}"
+                            class="img-fluid pb-2"
+                            alt="Cuiping Wan Art"
+                        />
                     </div>
                 </div>
             </div>
-            <div class="col">
-                <div class="shadow p-3 m-2 rounded-3">
-                    <img src="{{ url_for('static', filename='assets/img/judges/cuiping.jpg') }}" class="img-fluid pb-2"
-                         alt="Cuiping Wan Photo">
-                    <h5>Cuiping Wan</h5>
-                    <p>Cuiping Wan, a graduate of Hubei Institute of Fine Arts, is a renowned painter recognized for her
-                        expertise in oil painting. Her work blends figurative and realistic techniques to uncover the
-                        inherent abstraction within objects. Among her notable works is the historical illustrated book
-                        series Painting the Xinhai Revolution, which vividly depicts the course of China's modern
-                        revolutionary history through over 500 paintings. Wan has ventured into various art forms and
-                        currently serves as an academic judge for the China Sketching Association, wielding significant
-                        influence in the art world and shaping the next generation of artists.</p>
-                    <div class="row">
-                        <div class="col">
-                            <img src="{{ url_for('static', filename='assets/img/judges/cuiping1.jpg') }}"
-                                 class="img-fluid pb-2" alt="Cuiping Wan Art">
-                            <img src="{{ url_for('static', filename='assets/img/judges/cuiping3.jpg') }}"
-                                 class="img-fluid pb-2" alt="Cuiping Wan Art">
-                        </div>
-                        <div class="col">
-                            <img src="{{ url_for('static', filename='assets/img/judges/cuiping2.jpg') }}"
-                                 class="img-fluid pb-2" alt="Cuiping Wan Art">
-                        </div>
-                    </div>
-                </div>
-                <div class="shadow p-3 m-2 rounded-3">
-                    <img src="{{ url_for('static', filename='assets/img/judges/cherryqi.jpg') }}"
-                         class="img-fluid pb-2" alt="Cherry Qi Photo">
-                    <h5>Cherry Qi</h5>
-                    <p>Cherry Qi, a Registered Clinical Counsellor (RCC) in British Columbia, holds master's degrees in Clinical Psychology and Language and Literature. With experience at UBC’s Child Cognitive Development Center and Vancouver Coastal Health’s Adolescent Psychotherapy Center, she specializes in child and adolescent mental health.She further honed her expertise through training in the psychotherapy program at the Chicago Psychoanalytic Institute. A graduate of UBC’s psychology program, she specializes in child and adolescent mental health and cognitive development. As an active member of professional psychology associations in both the US and Canada, she remains a respected figure in the field of mental health.</p>
-                </div>
+            <div class="shadow p-3 m-2 rounded-3">
+                <img
+                    src="{{ url_for('static', filename='assets/img/judges/cherryqi.jpg') }}"
+                    class="img-fluid pb-2"
+                    alt="Cherry Qi Photo"
+                />
+                <h5>Cherry Qi</h5>
+                <p>
+                    Cherry Qi, a Registered Clinical Counsellor (RCC) in British
+                    Columbia, holds master's degrees in Clinical Psychology and
+                    Language and Literature. With experience at UBC’s Child
+                    Cognitive Development Center and Vancouver Coastal Health’s
+                    Adolescent Psychotherapy Center, she specializes in child
+                    and adolescent mental health.She further honed her expertise
+                    through training in the psychotherapy program at the Chicago
+                    Psychoanalytic Institute. A graduate of UBC’s psychology
+                    program, she specializes in child and adolescent mental
+                    health and cognitive development. As an active member of
+                    professional psychology associations in both the US and
+                    Canada, she remains a respected figure in the field of
+                    mental health.
+                </p>
             </div>
         </div>
     </div>
+</div>
 {% endblock %}
