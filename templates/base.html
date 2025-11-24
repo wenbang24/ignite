@@ -26,9 +26,10 @@
 <body>
 <nav class="navbar navbar-light navbar-expand-md">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{{ url_for('home') }}">
+        <a class="navbar-brand" href="{{ url_for('home') }}" style="display: flex; align-items: center;">
             <img src="{{ url_for('static', filename='assets/img/logo.jpeg') }}" alt="Ignite Global Art Show"
-                 style="height: 80px;">
+                 style="height: 80px; padding-left: 5px; padding-bottom: 3px; padding-right: 5px;">
+            <p style="font-size: 12px; font-weight: 550; position: relative; top: 5px;">2025-2026<br>Global Gifted Child<br>Art Competition</p>
         </a>
         <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar">
             <span class="visually-hidden">Toggle navigation</span>
