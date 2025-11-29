@@ -34,7 +34,6 @@ from mongoengine import Document, connection
 from mongoengine.fields import EmailField, ListField, SequenceField, StringField
 from werkzeug.security import check_password_hash, generate_password_hash
 
-
 def upload_file(file, filename):
     s3_client = boto3.client(
         "s3",
@@ -196,10 +195,15 @@ def about():
     return render_template("about.html")
 
 
-@app.route("/winners")
-def winners():
-    return render_template("winners.html")
-
+@app.route("/winners23")
+def winners23():
+    return render_template("winners23.html")
+ 
+@app.route("/winners24")
+def winners24():
+    with open("static/24.json", "r") as f:
+        artworks = json.load(f)
+    return render_template("winners24.html", artworks=artworks)
 
 @app.route("/contact", methods=["POST"])
 @limiter.limit(
@@ -556,7 +560,6 @@ def logout():
 @app.route("/legal")
 def legal():
     return render_template("legal.html")
-
 
 @app.route("/robots.txt")
 @app.route("/sitemap.xml")

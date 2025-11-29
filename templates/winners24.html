@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="text-center mx-auto w-100">
+        <h1>2024 Submissions</h1>
+        <p>Click on an image to see details</p>
+    </div>
+    <div class="container justify-content-center">
+        {% for artwork in artworks %}
+            <div class="d-flex flex-wrap py-3">
+                <p><strong>{{ artwork['id'] }}</strong></p>
+                <button style="border:none;background:none;" class="px-5" type="button" data-bs-toggle="modal"
+                        data-bs-target={{ '#' + artwork['filename'] | replace('.', '') | replace('_', '') }}>
+                    <div style="height: 410px; width: 410px; padding: 10px; background: #4a3600">
+                        <div class="zoom-img">
+                            <img style="object-fit: contain; height: 390px; width: 390px; background: #ffffff"
+                                 src="https://ignite-global.s3.ap-southeast-2.amazonaws.com/{{ artwork['filename'] }}"
+                                 alt="{{ artwork['artname'] }}">
+                        </div>
+                    </div>
+                </button>
+                <div class="modal" id="{{ artwork['filename'] | replace('.', '') | replace('_', '') }}">
+                    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">
+                                    {{ artwork['artname'] }} <i>({{ artwork['medium'] }})</i><br>
+                                    <small>Author: {{ artwork['name'] }}</small><br>
+                                    <small>Country: {{ artwork['country'] }}</small>
+                                </h4>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+
+                            <div class="modal-body">
+                                <img style="max-height: 50vh; max-width: 100%; padding: 5px; margin: auto;"
+                                     src="https://ignite-global.s3.ap-southeast-2.amazonaws.com/{{ artwork['filename'] }}"
+                                     alt="{{ artwork['artname'] }}">
+                                <p>{{ artwork['caption'] }}</p>
+                            </div>
+
+                            <div class="modal-footer">
+                                <p>Upvotes: {{ artwork['vote_count'] }}</p>
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="pl-5" style="min-width: 300px; max-width: calc(95% - 510px)">
+                    <h2>{{ artwork['artname'] }} <em>({{ artwork['medium'] }})</em></h2>
+                    <h2>Artist: {{ artwork['name'] }}</h2>
+                    <h2>Country: {{ artwork['country'] }}</h2>
+                    <p>{{ artwork['caption'] }}</p>
+                    <p>Upvotes: {{ artwork['vote_count'] }}</p>
+                </div>
+            </div>
+        {% endfor %}
+        <script type="text/javascript">
+            if (!Array.prototype.last){
+                Array.prototype.last = function(){
+                    return this[this.length - 1];
+                };
+            }
+        </script>
+    </div>
+{% endblock %}
